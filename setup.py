@@ -1,21 +1,23 @@
 # SETUP SCRIPT
 
 import setuptools
-from pyhrv import __author__, __version__, __email__, name, description
 
 # Create setup
 setuptools.setup(
-	name=name,
-	version=__version__,
-	author=__author__,
-	author_email=__email__,
-	description=description,
-	long_description='',
+	name='brain-heart-analysis',
+	version=0.1,
+	author="Dean Huang from Taiwan",
+	author_email="dean.huang.tw@gmail.com",
+	description="a tool set for HRV and EEG analysis",
+	long_description='as above',
 	long_description_content_type="text/markdown",
 	python_requires='>=3.8',
 	url="https://github.com/dean456/brain-heart-analysis",
 	keywords=['Heart Rate Variability', 'HRV','EEG'],
 	setup_requires=[
+		'pyHRV',
+		'wfdb',
+		'IPython',
 		'numpy',
 		'scipy',
 		'biosppy',
@@ -24,10 +26,13 @@ setuptools.setup(
 		'spectrum',
 	],
 	install_requires=[
-		'biosppy',
-		'matplotlib',
+		'pyHRV',
+		'wfdb',
+		'IPython',
 		'numpy',
 		'scipy',
+		'biosppy',
+		'matplotlib',
 		'nolds',
 		'spectrum',
 	],
@@ -42,11 +47,7 @@ setuptools.setup(
 		'Natural Language :: English',
 		'License :: OSI Approved :: BSD License',
 		'Programming Language :: Python',
-		'Programming Language :: Python :: 2.7',
-		'Programming Language :: Python :: 3.4',
-		'Programming Language :: Python :: 3.5',
-		'Programming Language :: Python :: 3.6',
-		'Programming Language :: Python :: 3.7',
+		'Programming Language :: Python :: 3.8',
 		'Operating System :: OS Independent',
 	],
 )
