@@ -2,8 +2,6 @@
 
 import setuptools
 from pyhrv import __author__, __version__, __email__, name, description
-with open("README.md", "r", encoding="utf8") as fh:
-	long_description = fh.read()
 
 # Create setup
 setuptools.setup(
@@ -12,7 +10,7 @@ setuptools.setup(
 	author=__author__,
 	author_email=__email__,
 	description=description,
-	long_description=long_description,
+	long_description='',
 	long_description_content_type="text/markdown",
 	python_requires='>=3.8',
 	url="https://github.com/dean456/brain-heart-analysis",
@@ -35,8 +33,7 @@ setuptools.setup(
 	],
 
 	packages=setuptools.find_packages(),
-	package_data={
-		"pyhrv": ["files/*", "README.md", "references.txt", "files/quickstart/*"]},
+	package_data={},
 	include_package_data=True,
 	classifiers=[
 		'Intended Audience :: Developers',
