@@ -1,7 +1,6 @@
 import os
 import sys
 sys.path.append(os.path.abspath(os.getcwd()))
-
 from dataio import DataIO, MyJsonEncoder
 import numpy as np
 import csv
@@ -21,6 +20,7 @@ eeg = DataIO("testData\\eeg\\s01_ex01_s01.csv","csv",withheader=1,delimiter="\\"
 sampling_rate_eeg = 125
 ekg = DataIO("testData\\ekg\\100","wfdb",withheader=0,delimiter="\\") # using MIT wfdb format
 sampling_rate_ekg = 360
+time_interval_ekg= 1/sampling_rate_ekg*1000 #ms
 
 #print(eeg.data) #np.array
 #print(ekg.data) #np.array
@@ -28,11 +28,11 @@ sampling_rate_ekg = 360
 #ekg.getPlot(title='EKG')
 
 # Load sample ECG signal & extract R-peaks using BioSppy
-signal = ekg.data[:,1] #mV
-signal, rpeaks = biosppy.signals.ecg.ecg(signal, sampling_rate=sampling_rate_ekg, show=False)[1:3] # return ts(second), filtered ECG, rpeaks
+signal = ekg.data[:,1] # in mV
+signal, rpeaks = biosppy.signals.ecg.ecg(signal, sampling_rate=sampling_rate_ekg, show=False)[1:3] # return ts(second), filtered ECG(mV), rpeaks(location indice)
 
 # Compute NNI
-nni = tools.nn_intervals(rpeaks)
+nni = tools.nn_intervals(rpeaks*time_interval_ekg)
 
 # Time Domain Settings
 settings_time = {
@@ -78,15 +78,13 @@ results = pyhrv.hrv(nni=nni,
 				kwargs_ar=settings_ar,
 				kwargs_lomb=settings_lomb,
 				kwargs_nonlinear=settings_nonlinear)
-#rpeaks=rpeaks, signal=signals,fbands=None,
+#fbands=None
 #If fbands is none, the default values for the frequency bands will be set.
 #VLF: [0.00Hz - 0.04Hz]
 #LF: [0.04Hz - 0.15Hz]
 #HF: [0.15Hz - 0.40Hz]				
 
 #print(results.as_dict())
-	
-print(results)
 
 resultfolder ="results\\"
 reportname='hrv_results'
