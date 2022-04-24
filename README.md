@@ -5,7 +5,9 @@
 4. Last update: 2022/4/25
 5. Quick Start:
 6. Instruction:
+
 (1) Setup: python setup.py install
+
 (2) Usage: python main.py
 		   [-h] or [--help] help
 	     [-e] or [--eeg] EEG mode
@@ -20,6 +22,7 @@
 		   [-w] input wfdb format file (include .dat and .hea and/or .atr), eg. "wfdb/100"
 		   [-o] the folder for output reports")
 7. Example:
+
 (1) a single eeg .csv file with sampling frequency 200 Hz:
 python main.py -e -i testData\eeg\s01_ex01_s01.csv -s 200 -o eeg_result_single_file
 
