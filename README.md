@@ -21,7 +21,8 @@
 		   [-n] if csv file without a header, you needs to input a list of column names, eg. "id,C1,C2,C3"
 		   [-w] input wfdb format file (include .dat and .hea and/or .atr), eg. "wfdb/100"
 		   [-o] the folder for output reports")
-7. Example:
+
+6. Example:
 
 (1) a single eeg .csv file with sampling frequency 200 Hz:
 python main.py -e -i testData\eeg\s01_ex01_s01.csv -s 200 -o eeg_result_single_file
