@@ -20,7 +20,8 @@ sys.path.append(os.path.abspath(os.getcwd()))
 import getopt
 import numpy as np
 from dataio import DataIO
-
+import warnings
+warnings.filterwarnings("ignore")
 
 def main(argv):
 	inputfile = ''
@@ -114,7 +115,12 @@ def main(argv):
 	eeg.getRawPlot(title='EEG',outputfolder="result")
 	ekg = DataIO("testData\\ekg\\100",iswfdb,withheader=0,delimiter="\\") # using MIT wfdb format
 	sampling_rate_ekg = 360
-	eKg.getRawPlot(title='ECG',outputfolder="result")
+	def fxn():
+		warnings.warn("deprecated", DeprecationWarning)
+
+	with warnings.catch_warnings():
+		warnings.simplefilter("ignore")
+		fxn()
 	'''
 if __name__ == "__main__":
 	main(sys.argv[1:])
