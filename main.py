@@ -1,100 +1,121 @@
+# Brain-Heart-Analysis 
+# https://github.com/dean456/brain-heart-analysis
+# Author: Dean Huang (dean4562007@gmail.com)
+# Version: 0.2.1 
+# Last update: 2022/4/23
+# Instruction:
+# 1. Setup: python setup.py install
+# 2. Usage: python main.py 
+#           [-h] or [--help] help
+#           [-e] or [--eeg] EEG mode
+#           [-c] or [--ecg] ECG(HRV) mode
+#           [-s] or [--samplingrate] Sampling frequency (Hz).
+#           [-i] or [--inputcsv] input csv file path (only .csv is recognizable) each column is one channel. The header includs channel names.
+#           [-w] or [--inputwfdb] input wfdb format folder and filename (include .dat and .hea and/or .atr)
+#           [-o] or [--outfolder] a folder name created for outouting reports
+
 import os
 import sys
 sys.path.append(os.path.abspath(os.getcwd()))
-from dataio import DataIO, MyJsonEncoder
+import getopt
 import numpy as np
-import csv
-import wfdb
-from IPython.display import display
-import matplotlib 
-matplotlib.use('Qt5Agg') # set the 'Qt5Agg' backend to support interactive mode on Windows and macOS
-import matplotlib.pyplot as plt
-import biosppy
-import glob
-import pyhrv
-import pyhrv.tools as tools
-import json 
+from dataio import DataIO
 
-# DataIO
-eeg = DataIO("testData\\eeg\\s01_ex01_s01.csv","csv",withheader=1,delimiter="\\")
-sampling_rate_eeg = 125
-ekg = DataIO("testData\\ekg\\100","wfdb",withheader=0,delimiter="\\") # using MIT wfdb format
-sampling_rate_ekg = 360
-time_interval_ekg= 1/sampling_rate_ekg*1000 #ms
 
-#print(eeg.data) #np.array
-#print(ekg.data) #np.array
-#eeg.getPlot(title='EEG')
-#ekg.getPlot(title='EKG')
-
-# Load sample ECG signal & extract R-peaks using BioSppy
-signal = ekg.data[:,1] # in mV
-signal, rpeaks = biosppy.signals.ecg.ecg(signal, sampling_rate=sampling_rate_ekg, show=False)[1:3] # return ts(second), filtered ECG(mV), rpeaks(location indice)
-
-# Compute NNI
-nni = tools.nn_intervals(rpeaks*time_interval_ekg)
-
-# Time Domain Settings
-settings_time = {
-    'threshold': 50,            # Computation of NNXX/pNNXX with 50 ms threshold -> NN50 & pNN50
-    'plot': True,               # If True, plots NNI histogram
-    'binsize': 7.8125           # Binsize of the NNI histogram
-}
-
-# Frequency Domain Settings
-settings_welch = {
-    'nfft': 2 ** 12,            # Number of points computed for the FFT result
-    'detrend': True,            # If True, detrend NNI series by subtracting the mean NNI
-    'window': 'hanning'         # Window function used for PSD estimation
-}
-
-settings_lomb = {
-    'nfft': 2**8,               # Number of points computed for the Lomb PSD
-    'ma_size': 5                # Moving average window size
-}
-
-settings_ar = {
-    'nfft': 2**12,              # Number of points computed for the AR PSD
-    'order': 32                 # AR order
-}
-
-# Nonlinear Parameter Settings
-settings_nonlinear = {
-    'short': [4, 16],           # Interval limits of the short term fluctuations
-    'long': [17, 64],           # Interval limits of the long term fluctuations
-    'dim': 2,                   # Sample entropy embedding dimension
-    'tolerance': None           # Tolerance distance for which the vectors to be considered equal (None sets default values)
-}
-
-# Compute the pyHRV parameters
-results = pyhrv.hrv(nni=nni,
-				sampling_rate=sampling_rate_ekg,
-				interval=[0, 10], 
-				plot_ecg=True,
-				plot_tachogram=True,
-				show=False,
-				kwargs_time=settings_time,
-				kwargs_welch=settings_welch,
-				kwargs_ar=settings_ar,
-				kwargs_lomb=settings_lomb,
-				kwargs_nonlinear=settings_nonlinear)
-#fbands=None
-#If fbands is none, the default values for the frequency bands will be set.
-#VLF: [0.00Hz - 0.04Hz]
-#LF: [0.04Hz - 0.15Hz]
-#HF: [0.15Hz - 0.40Hz]				
-
-#print(results.as_dict())
-
-resultfolder ="results\\"
-reportname='hrv_results'
-if not os.path.isdir(resultfolder):
-	os.mkdir(resultfolder)
-
-pyhrv.tools.hrv_export(results, path=resultfolder, efile=reportname, comment=None, plots=True)
+def main(argv):
+	inputfile = ''
+	outputfolder = ''
+	delimiter = ','
+	mode = ''
+	iswfdb = 0
+	issinglefile=0
+	withheader = 1
+	header=[]
+	showTimeDomain=False
+	showFrequencyDomain=False
+	try:
+		opts, args = getopt.getopt(argv,"hectfs:i:d:bn:w:o:",["help","eeg","ecg","showTimeDomain","showFrequencyDomain","samplingRate","inputcsv=","csvdelimiter=","csvdelimiterwithspace","csvheader=","inputwfdb=","outputfolder="])
+	except getopt.GetoptError:
+		print("Usage: python main.py")
+		print("[-h] or [--help] help")
+		print("[-e] or [--eeg] EEG mode")
+		print("[-c] or [--ecg] ECG(HRV) mode")
+		print("[-t] or [--showTimeDomain] Show/Print Time Domain deta")
+		print("[-f] or [--showFrequencyDomain] Show/Print Frequency Domain deta (Only work in ECG mode)")
+		print("[-s] or [--samplingrate] Sampling frequency (Hz).")
+		print("[-i] input csv file path (only .csv is recognizable)")
+		print("[-d] csv file delimiter")
+		print("[-b] csv file delimiter with space")
+		print("[-n] csv file without a header and needs to input a list of column names")
+		print("[-w] input wfdb format folder and filename (include .dat and .hea and/or .atr)")
+		print("[-o] folder for outouted reports")
+		sys.exit(2)
 		
-#pyhrv.tools.hrv_report(results, path=resultfolder, rfile=reportname, nni=nni, info={'file':ekg.filename,'fs':sampling_rate_ekg}, file_format='txt', delimiter=',', hide=False, plots=True)
-
-
-		
+	for opt, arg in opts:
+		if opt in ("-h", "--help"):
+			print('Usage: python main.py [-e/-c] <EEG/ECG mode> [-t] <showTimeDomain> [-f] <showFrequencyDomain> [-s] <sampling rate(Hz)> [-i] <inputcsvfile> [-w] <inputwfdb> [-o] <outputfolder>')
+			sys.exit()
+		elif opt in ("-e", "--eeg"):
+			mode = 'EEG'
+		elif opt in ("-c", "--ecg"):
+			mode = 'ECG'
+		elif opt in ("-t", "--showTimeDomain"):
+			showTimeDomain = True
+		elif opt in ("-f", "--showFrequencyDomain"):
+			showFrequencyDomain = True
+		elif opt in ("-s", "--samplingRate"):
+			sampling_rate = float(arg)
+		elif opt in ("-i", "--inputcsv"):
+			if os.path.isfile(str(arg)):
+				inputfile=str(arg)
+				issinglefile=1
+			else:
+				inputfile = [os.path.join(str(arg), f) for f in os.listdir(str(arg)) if os.path.isfile(os.path.join(str(arg), f))]
+		elif opt in ("-d", "--csvdelimiter"):
+			delimiter = str(arg)
+		elif opt in ("-b", "--csvdelimiterwithspace"):
+			delimiter = " "
+		elif opt in ("-n", "--noheader"):
+			withheader = 0
+			header = arg.split(',')
+		elif opt in ("-w", "--inputwfdb"):
+			inputfile = str(arg)
+			iswfdb = 1
+			withheader = 0
+		elif opt in ("-o", "--outputfolder"):
+			outputfolder = str(arg)
+	
+	if iswfdb == 1 or issinglefile==1:	
+		raw = DataIO(inputfile,iswfdb,withheader,header=header,pathdelimiter=os.sep,csvdelimiter=delimiter)
+		raw.getRawPlot(title=mode,outputfolder=outputfolder)
+		if mode == 'EEG':
+			raw.EEG(sampling_rate,outputfolder,showTimeDomain)
+		elif mode == 'ECG':
+			raw.HRV(sampling_rate,outputfolder,showTimeDomain,showFrequencyDomain)
+		else:
+			print('Unknown analysis mode!')
+	else:
+		for f in inputfile:
+			print('Processing: '+f)
+			raw = DataIO(f,iswfdb,withheader,header=header,pathdelimiter=os.sep,csvdelimiter=delimiter)
+			raw.getRawPlot(title=mode,outputfolder=outputfolder)
+			if mode == 'EEG':
+				raw.EEG(sampling_rate,outputfolder,showTimeDomain=showTimeDomain)
+			elif mode == 'ECG':
+				raw.HRV(sampling_rate,outputfolder,showTimeDomain=showTimeDomain,showFrequencyDomain=showFrequencyDomain)
+			else:
+				print('Unknown analysis mode!')
+	
+	'''
+	iswfdb=0
+	eeg = DataIO("testData\\eeg\\s01_ex01_s01.csv",iswfdb,withheader=1,delimiter=os.sep)
+	print(eeg.data)
+	sampling_rate_eeg = 200
+	eeg.getRawPlot(title='EEG',outputfolder="result")
+	ekg = DataIO("testData\\ekg\\100",iswfdb,withheader=0,delimiter="\\") # using MIT wfdb format
+	sampling_rate_ekg = 360
+	eKg.getRawPlot(title='ECG',outputfolder="result")
+	'''
+if __name__ == "__main__":
+	main(sys.argv[1:])
 

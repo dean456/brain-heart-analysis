@@ -5,9 +5,9 @@ import setuptools
 # Create setup
 setuptools.setup(
 	name='brain-heart-analysis',
-	version=0.1,
+	version=0.2.1,
 	author="Dean Huang from Taiwan",
-	author_email="dean.huang.tw@gmail.com",
+	author_email="dean4562007@gmail.com",
 	description="a tool set for HRV and EEG analysis",
 	long_description='as above',
 	long_description_content_type="text/markdown",
