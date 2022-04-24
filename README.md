@@ -1,11 +1,12 @@
 # Brain-Heart-Analysis
-# Application: Analyse HRV and EEG in a shot 
-# Author: Dean Huang (dean4562007@gmail.com)
-# Version: 0.2.1 
-# Last update: 2022/4/25
-# Quick Start:
-# 1. Setup: python setup.py install
-# 2. Usage: python main.py
+1. Application: Analyse HRV and EEG in a shot 
+2. Author: Dean Huang (dean4562007@gmail.com)
+3. Version: 0.2.1 
+4. Last update: 2022/4/25
+5. Quick Start:
+6. Instruction:
+(1) Setup: python setup.py install
+(2) Usage: python main.py
 		   [-h] or [--help] help
 	     [-e] or [--eeg] EEG mode
 		   [-c] or [--ecg] ECG(HRV) mode
@@ -18,7 +19,7 @@
 		   [-n] if csv file without a header, you needs to input a list of column names, eg. "id,C1,C2,C3"
 		   [-w] input wfdb format file (include .dat and .hea and/or .atr), eg. "wfdb/100"
 		   [-o] the folder for output reports")
-# 3. Example:
+7. Example:
 (1) a single eeg .csv file with sampling frequency 200 Hz:
 python main.py -e -i testData\eeg\s01_ex01_s01.csv -s 200 -o eeg_result_single_file
 
