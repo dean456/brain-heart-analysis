@@ -13,19 +13,32 @@ Dean Huang (dean4562007@gmail.com)
 `python setup.py install`
 
 ### Usage: 
+
 `python main.py <opt> arg`
-`               [-h] or [--help] help`
-`               [-e] or [--eeg] EEG mode`
-`               [-c] or [--ecg] ECG(HRV) mode`
-`		[-t] or [--showTimeDomain] Show/Print Time Domain deta`
-`		[-f] or [--showFrequencyDomain] Show/Print Frequency Domain deta (Only work in ECG mode)`
-`		[-s] or [--samplingrate] Sampling frequency (Hz)`
-`		[-i] path or folder of the input csv file(s) (only .csv and .txt are recognizable)`
-`		[-d] delimiter of the csv file(s)`
-`		[-b] if the csv file delimiter is space (eg. " ")`
-`		[-n] if csv file without a header, you needs to input a list of column names, eg. "id,C1,C2,C3"`
-`		[-w] input wfdb format file (include .dat and .hea and/or .atr), eg. "wfdb/100"`
-`		[-o] the folder for output reports")`
+
+`[-h] or [--help] help`
+
+`[-e] or [--eeg] EEG mode`
+
+`[-c] or [--ecg] ECG(HRV) mode`
+
+`[-t] or [--showTimeDomain] Show/Print Time Domain deta`
+
+`[-f] or [--showFrequencyDomain] Show/Print Frequency Domain deta (Only work in ECG mode)`
+
+`[-s] or [--samplingrate] Sampling frequency (Hz)`
+
+`[-i] path or folder of the input csv file(s) (only .csv and .txt are recognizable)`
+
+`[-d] delimiter of the csv file(s)`
+
+`[-b] if the csv file delimiter is space (eg. " ")`
+
+`[-n] if csv file without a header, you needs to input a list of column names, eg. "id,C1,C2,C3"`
+
+`[-w] input wfdb format file (include .dat and .hea and/or .atr), eg. "wfdb/100"`
+
+`[-o] the folder for output reports")`
 
 ## Example:
 
